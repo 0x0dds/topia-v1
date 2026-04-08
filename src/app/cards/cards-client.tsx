@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import CardImage from "@/components/card-image";
-import { formatPrice, getLowestPrice, getPriceRange } from "@/lib/price";
+import { formatPrice, getLowestPrice } from "@/lib/price";
 import type { CatalogEntry, Set } from "@/lib/types";
 
 type SortOption = "name-asc" | "name-desc" | "price-asc" | "price-desc" | "newest";
@@ -17,12 +17,12 @@ interface CardGroup {
   canonical_name: string;
   disambiguator: string | null;
   supertype: string | null;
-  types: string[] | null;
+  energy_type: string | null;
   rarity: string | null;
   set_code: string;
   set_name: string;
-  collector_number: string;
-  image_url: string | null;
+  collector_number_raw: string;
+  image_small_url: string | null;
   entries: CatalogEntry[];
   lowestPrice: number | null;
 }
@@ -68,7 +68,7 @@ export default function CardsClient() {
         query = query.eq("set_code", selectedSet);
       }
       if (selectedType) {
-        query = query.contains("types", [selectedType]);
+        query = query.eq("energy_type", selectedType);
       }
       if (selectedRarity) {
         query = query.eq("rarity", selectedRarity);
@@ -102,20 +102,19 @@ export default function CardsClient() {
         const existing = map.get(e.card_id);
         if (existing) {
           existing.entries.push(e);
-          const lp = getLowestPrice(existing.entries);
-          existing.lowestPrice = lp;
+          existing.lowestPrice = getLowestPrice(existing.entries);
         } else {
           map.set(e.card_id, {
             card_id: e.card_id,
             canonical_name: e.canonical_name,
             disambiguator: e.disambiguator,
             supertype: e.supertype,
-            types: e.types,
+            energy_type: e.energy_type,
             rarity: e.rarity,
             set_code: e.set_code,
             set_name: e.set_name,
-            collector_number: e.collector_number,
-            image_url: e.image_url,
+            collector_number_raw: e.collector_number_raw,
+            image_small_url: e.image_small_url,
             entries: [e],
             lowestPrice: e.market_price,
           });
@@ -160,7 +159,7 @@ export default function CardsClient() {
         >
           <option value="">All Sets</option>
           {sets.map((s) => (
-            <option key={s.id} value={s.code}>
+            <option key={s.id} value={s.set_code}>
               {s.name}
             </option>
           ))}
@@ -171,7 +170,7 @@ export default function CardsClient() {
           className="rounded-lg border border-border bg-bg-input px-3 py-2 text-sm text-text outline-none focus:border-accent"
         >
           <option value="">All Types</option>
-          {["Fire", "Water", "Grass", "Electric", "Psychic", "Fighting", "Darkness", "Metal", "Dragon", "Fairy", "Colorless"].map((t) => (
+          {["Fire", "Water", "Grass", "Lightning", "Psychic", "Fighting", "Darkness", "Metal", "Dragon", "Fairy", "Colorless"].map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
         </select>
@@ -229,8 +228,8 @@ export default function CardsClient() {
             >
               <CardImage
                 setCode={card.set_code}
-                collectorNumber={card.collector_number}
-                fallbackUrl={card.image_url}
+                collectorNumber={card.collector_number_raw}
+                imageSmallUrl={card.image_small_url}
                 name={card.canonical_name}
                 width={170}
                 height={238}
@@ -289,7 +288,7 @@ export default function CardsClient() {
                     {card.set_name}
                   </td>
                   <td className="px-4 py-3 text-text-muted hidden md:table-cell">
-                    {card.types?.join(", ") ?? "—"}
+                    {card.energy_type ?? "—"}
                   </td>
                   <td className="px-4 py-3 text-text-muted hidden md:table-cell">
                     {card.rarity ?? "—"}

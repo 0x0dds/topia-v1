@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import CardImage from "@/components/card-image";
-import type { Set, CatalogEntry } from "@/lib/types";
+import type { Set as SetType, CatalogEntry } from "@/lib/types";
 
 interface Props {
   params: Promise<{ code: string }>;
@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: Props) {
   const { data: set } = await supabase
     .from("sets")
     .select("name")
-    .eq("code", code)
-    .single<Pick<Set, "name">>();
+    .eq("set_code", code)
+    .single<Pick<SetType, "name">>();
   return { title: set ? `${set.name} — topia` : "Set — topia" };
 }
 
@@ -24,17 +24,17 @@ export default async function SetDetailPage({ params }: Props) {
   const { data: set } = await supabase
     .from("sets")
     .select("*")
-    .eq("code", code)
-    .single<Set>();
+    .eq("set_code", code)
+    .single<SetType>();
 
   if (!set) notFound();
 
-  // Get unique printings for this set (one per card, deduped by card_id)
+  // Get unique printings for this set
   const { data: entries } = await supabase
     .from("v_catalog_full")
     .select("*")
     .eq("set_code", code)
-    .order("collector_number", { ascending: true })
+    .order("collector_number_raw", { ascending: true })
     .returns<CatalogEntry[]>();
 
   // Dedupe to one entry per printing (first variant)
@@ -59,7 +59,7 @@ export default async function SetDetailPage({ params }: Props) {
             {set.name}
           </h1>
           <span className="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent">
-            {set.code}
+            {set.set_code}
           </span>
         </div>
         <p className="mt-1 text-sm text-text-muted">
@@ -78,8 +78,8 @@ export default async function SetDetailPage({ params }: Props) {
           >
             <CardImage
               setCode={entry.set_code}
-              collectorNumber={entry.collector_number}
-              fallbackUrl={entry.image_url}
+              collectorNumber={entry.collector_number_raw}
+              imageSmallUrl={entry.image_small_url}
               name={entry.canonical_name}
               width={180}
               height={252}
@@ -93,7 +93,7 @@ export default async function SetDetailPage({ params }: Props) {
                 )}
               </p>
               <p className="text-xs text-text-muted">
-                #{entry.collector_number}
+                #{entry.collector_number_raw}
                 {entry.rarity && ` · ${entry.rarity}`}
               </p>
             </div>

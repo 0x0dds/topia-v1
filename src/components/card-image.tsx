@@ -7,8 +7,10 @@ import { getCardImageUrl } from "@/lib/image";
 interface CardImageProps {
   setCode: string;
   collectorNumber: string;
-  fallbackUrl?: string | null;
+  imageSmallUrl?: string | null;
+  imageLargeUrl?: string | null;
   name: string;
+  size?: "small" | "large";
   width?: number;
   height?: number;
   className?: string;
@@ -18,15 +20,18 @@ interface CardImageProps {
 export default function CardImage({
   setCode,
   collectorNumber,
-  fallbackUrl,
+  imageSmallUrl,
+  imageLargeUrl,
   name,
+  size = "small",
   width = 245,
   height = 342,
   className = "",
   priority = false,
 }: CardImageProps) {
   const [error, setError] = useState(false);
-  const src = getCardImageUrl(setCode, collectorNumber, fallbackUrl);
+  const fallback = size === "large" ? imageLargeUrl : imageSmallUrl;
+  const src = getCardImageUrl(setCode, collectorNumber, fallback);
 
   if (error) {
     return (

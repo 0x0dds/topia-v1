@@ -59,9 +59,11 @@ export default async function CardDetailPage({ params }: Props) {
           {hero ? (
             <CardImage
               setCode={hero.set_code}
-              collectorNumber={hero.collector_number}
-              fallbackUrl={hero.image_url}
+              collectorNumber={hero.collector_number_raw}
+              imageSmallUrl={hero.image_small_url}
+              imageLargeUrl={hero.image_large_url}
               name={displayName}
+              size="large"
               width={300}
               height={419}
               priority
@@ -89,28 +91,26 @@ export default async function CardDetailPage({ params }: Props) {
                 {card.supertype}
               </span>
             )}
-            {card.subtypes?.map((st) => (
-              <span
-                key={st}
-                className="rounded-md border border-border px-2.5 py-1 text-xs font-medium text-text-muted"
-              >
-                {st}
+            {card.subtype && (
+              <span className="rounded-md border border-border px-2.5 py-1 text-xs font-medium text-text-muted">
+                {card.subtype}
               </span>
-            ))}
+            )}
             {card.hp && (
               <span className="rounded-md bg-accent-soft px-2.5 py-1 text-xs font-medium text-accent">
                 {card.hp} HP
               </span>
             )}
-            {card.types?.map((t) => (
-              <span
-                key={t}
-                className="rounded-full bg-bg-card px-3 py-1 text-xs font-medium"
-              >
-                {t}
+            {card.energy_type && (
+              <span className="rounded-full bg-bg-card px-3 py-1 text-xs font-medium">
+                {card.energy_type}
               </span>
-            ))}
+            )}
           </div>
+
+          {card.description && (
+            <p className="mt-4 text-sm text-text-muted">{card.description}</p>
+          )}
 
           {/* Variant selector with pricing */}
           <VariantSelector entries={allEntries} />

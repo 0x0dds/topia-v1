@@ -22,7 +22,7 @@ export default async function SetsPage() {
         {sets?.map((set) => (
           <Link
             key={set.id}
-            href={`/sets/${set.code}`}
+            href={`/sets/${set.set_code}`}
             className="group rounded-xl border border-border bg-bg-card p-5 transition-colors hover:border-border-light hover:bg-bg-card-hover"
           >
             <div className="flex items-start justify-between">
@@ -35,7 +35,7 @@ export default async function SetsPage() {
                 )}
               </div>
               <span className="rounded-md bg-accent-soft px-2 py-0.5 text-xs font-medium text-accent">
-                {set.code}
+                {set.set_code}
               </span>
             </div>
             <div className="mt-3 flex items-center gap-4 text-xs text-text-muted">

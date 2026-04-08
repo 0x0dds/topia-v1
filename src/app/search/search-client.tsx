@@ -79,8 +79,8 @@ export default function SearchClient() {
             >
               <CardImage
                 setCode={entry.set_code}
-                collectorNumber={entry.collector_number}
-                fallbackUrl={entry.image_url}
+                collectorNumber={entry.collector_number_raw}
+                imageSmallUrl={entry.image_small_url}
                 name={entry.canonical_name}
                 width={180}
                 height={252}

@@ -12,7 +12,7 @@ interface PrintingGroup {
   printing_id: string;
   set_name: string;
   set_code: string;
-  collector_number: string;
+  collector_number_raw: string;
   rarity: string | null;
   variants: CatalogEntry[];
 }
@@ -30,7 +30,7 @@ export default function VariantSelector({ entries }: Props) {
           printing_id: e.printing_id,
           set_name: e.set_name,
           set_code: e.set_code,
-          collector_number: e.collector_number,
+          collector_number_raw: e.collector_number_raw,
           rarity: e.rarity,
           variants: [e],
         });
@@ -79,7 +79,7 @@ export default function VariantSelector({ entries }: Props) {
                   : "border-border text-text-muted hover:border-border-light hover:text-text"
               }`}
             >
-              {p.set_name} #{p.collector_number}
+              {p.set_name} #{p.collector_number_raw}
             </button>
           ))}
         </div>
@@ -123,7 +123,7 @@ export default function VariantSelector({ entries }: Props) {
               {selectedVariant.special_marking && ` — ${selectedVariant.special_marking}`}
             </h3>
             <p className="text-xs text-text-dim">
-              {selectedVariant.set_name} #{selectedVariant.collector_number}
+              {selectedVariant.set_name} #{selectedVariant.collector_number_raw}
               {selectedVariant.rarity && ` · ${selectedVariant.rarity}`}
             </p>
           </div>
