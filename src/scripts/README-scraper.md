@@ -23,14 +23,14 @@ ALTER TABLE variants
   ADD COLUMN IF NOT EXISTS tcgplayer_url TEXT;
 ```
 
-3. Update the `v_catalog_full` view to include the new columns:
+3. Create or replace the `v_catalog_full` view to include the new columns:
 
 ```sql
 CREATE OR REPLACE VIEW v_catalog_full AS
 SELECT
-  s.id AS set_id, s.code AS set_code, s.name AS set_name, s.series, s.release_date,
-  c.id AS card_id, c.canonical_name, c.disambiguator, c.supertype, c.subtypes, c.hp, c.types,
-  p.id AS printing_id, p.collector_number, p.rarity, p.language, p.image_url,
+  s.id AS set_id, s.set_code, s.name AS set_name, s.series, s.release_date,
+  c.id AS card_id, c.canonical_name, c.disambiguator, c.supertype, c.subtype, c.energy_type, c.hp,
+  p.id AS printing_id, p.collector_number_raw, p.rarity, p.language, p.artist, p.image_small_url, p.image_large_url,
   v.id AS variant_id, v.finish, v.edition, v.special_marking,
   v.market_price, v.low_price, v.last_sold_price, v.price_updated_at, v.tcgplayer_url
 FROM variants v
@@ -44,10 +44,6 @@ JOIN sets s ON p.set_id = s.id;
 ## Usage
 
 ```bash
-# Install tsx if not present
-npm install -D tsx
-
-# Run the scraper
 npx tsx src/scripts/scrape-prices.ts
 ```
 
@@ -57,11 +53,3 @@ npx tsx src/scripts/scrape-prices.ts
 |---------|---------|-------------|
 | `SCRAPE_BATCH_SIZE` | 50 | Variants per run |
 | `SCRAPE_DELAY_MS` | 1500 | Delay between scrapes (ms) |
-
-## How it works
-
-1. Fetches variants with `tcgplayer_url` set, ordered by oldest `price_updated_at`
-2. For each variant, calls Cloudflare's `/scrape` endpoint to render the TCGplayer page
-3. Extracts market, low, and last-sold prices via CSS selectors
-4. Updates the variant row in Supabase
-5. Retries up to 3x with exponential backoff on failure

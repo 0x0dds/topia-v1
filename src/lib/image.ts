@@ -1,6 +1,6 @@
 /**
  * Build a pokemontcg.io image URL from set code + collector number.
- * Falls back to printing.image_url if available, then a placeholder.
+ * Falls back to provided image URLs if available.
  *
  * Set code mapping: our codes may differ from pokemontcg.io codes.
  * Add overrides here as needed.

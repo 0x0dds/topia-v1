@@ -100,12 +100,12 @@ export default async function HomePage() {
             {recentSets.map((set) => (
               <Link
                 key={set.id}
-                href={`/sets/${set.code}`}
+                href={`/sets/${set.set_code}`}
                 className="group rounded-xl border border-border bg-bg-card p-5 transition-all hover:border-border-light hover:bg-bg-card-hover"
               >
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent-soft text-accent font-bold text-sm">
-                    {set.code}
+                    {set.set_code}
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate font-semibold text-sm group-hover:text-accent transition-colors">
@@ -155,8 +155,8 @@ export default async function HomePage() {
               >
                 <CardImage
                   setCode={entry.set_code}
-                  collectorNumber={entry.collector_number}
-                  fallbackUrl={entry.image_url}
+                  collectorNumber={entry.collector_number_raw}
+                  imageSmallUrl={entry.image_small_url}
                   name={entry.canonical_name}
                   width={160}
                   height={224}
