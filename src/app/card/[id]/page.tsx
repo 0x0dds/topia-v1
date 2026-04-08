@@ -41,24 +41,21 @@ export default async function CardDetailPage({ params }: Props) {
     .returns<CatalogEntry[]>();
 
   const allEntries = entries ?? [];
-
-  // Pick the first printing for the hero image
   const hero = allEntries[0];
-
   const displayName = `${card.canonical_name}${card.disambiguator ? ` ${card.disambiguator}` : ""}`;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <Link
-        href={hero ? `/sets/${hero.set_code}` : "/sets"}
+        href={hero ? `/sets/${hero.set_code}` : "/cards"}
         className="text-sm text-text-muted transition-colors hover:text-text"
       >
-        &larr; Back to set
+        &larr; Back to {hero ? hero.set_name : "cards"}
       </Link>
 
       <div className="mt-6 grid gap-10 lg:grid-cols-[320px_1fr]">
         {/* Card image */}
-        <div className="flex justify-center lg:justify-start">
+        <div className="flex justify-center lg:sticky lg:top-20 lg:self-start">
           {hero ? (
             <CardImage
               setCode={hero.set_code}
@@ -85,6 +82,7 @@ export default async function CardDetailPage({ params }: Props) {
             )}
           </h1>
 
+          {/* Tags */}
           <div className="mt-3 flex flex-wrap gap-2">
             {card.supertype && (
               <span className="rounded-md border border-border px-2.5 py-1 text-xs font-medium text-text-muted">
@@ -104,26 +102,18 @@ export default async function CardDetailPage({ params }: Props) {
                 {card.hp} HP
               </span>
             )}
+            {card.types?.map((t) => (
+              <span
+                key={t}
+                className="rounded-full bg-bg-card px-3 py-1 text-xs font-medium"
+              >
+                {t}
+              </span>
+            ))}
           </div>
 
-          {card.types && card.types.length > 0 && (
-            <div className="mt-3 flex gap-2">
-              {card.types.map((t) => (
-                <span
-                  key={t}
-                  className="rounded-full bg-bg-card px-3 py-1 text-xs font-medium"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Variant selector (client component) */}
-          <div className="mt-8">
-            <h2 className="text-lg font-semibold">Variants</h2>
-            <VariantSelector entries={allEntries} />
-          </div>
+          {/* Variant selector with pricing */}
+          <VariantSelector entries={allEntries} />
         </div>
       </div>
     </div>

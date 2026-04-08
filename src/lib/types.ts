@@ -39,6 +39,11 @@ export interface Variant {
   finish: string;        // "Holo" | "Reverse Holo" | "Non-Holo" etc.
   edition: string | null;
   special_marking: string | null;
+  market_price: number | null;
+  low_price: number | null;
+  last_sold_price: number | null;
+  price_updated_at: string | null;
+  tcgplayer_url: string | null;
   created_at: string;
 }
 
@@ -70,6 +75,11 @@ export interface CatalogEntry {
   finish: string;
   edition: string | null;
   special_marking: string | null;
+  market_price: number | null;
+  low_price: number | null;
+  last_sold_price: number | null;
+  price_updated_at: string | null;
+  tcgplayer_url: string | null;
 }
 
 /* ── Homepage stats ── */
